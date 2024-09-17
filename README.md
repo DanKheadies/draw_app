@@ -1,16 +1,3 @@
 # draw_app
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+A personal flutter project to learn about paint, drawing, and the like. Thanks to [JideGuru](https://github.com/JideGuru) for his work and insights with the [Let's Draw app](https://github.com/JideGuru/flutter_drawing_board/).
