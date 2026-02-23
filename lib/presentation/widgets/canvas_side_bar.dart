@@ -73,6 +73,7 @@ class _CanvasSideBarState extends State<CanvasSideBar> {
       ),
       child: AnimatedBuilder(
         animation: Listenable.merge([
+          widget.allSketches,
           widget.selectedColor,
           widget.strokeSize,
           widget.eraserSize,
@@ -176,6 +177,7 @@ class _CanvasSideBarState extends State<CanvasSideBar> {
                     ),
                     Checkbox(
                       value: widget.filled.value,
+                      activeColor: widget.selectedColor.value,
                       onChanged: (val) {
                         widget.filled.value = val ?? false;
                       },
@@ -310,52 +312,52 @@ class _CanvasSideBarState extends State<CanvasSideBar> {
                       onPressed: () => _launchUrl(kGithubRepo),
                       child: const Text('View on Github'),
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Export',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Export',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Divider(),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 140,
+                      child: TextButton(
+                        child: const Text('Export PNG'),
+                        onPressed: () async {
+                          Uint8List? pngBytes = await getBytes();
+                          if (pngBytes != null) saveFile(pngBytes, 'png');
+                        },
                       ),
                     ),
-                    const Divider(),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 140,
-                          child: TextButton(
-                            child: const Text('Export PNG'),
-                            onPressed: () async {
-                              Uint8List? pngBytes = await getBytes();
-                              if (pngBytes != null) saveFile(pngBytes, 'png');
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: 140,
-                          child: TextButton(
-                            child: const Text('Export JPEG'),
-                            onPressed: () async {
-                              Uint8List? pngBytes = await getBytes();
-                              if (pngBytes != null) saveFile(pngBytes, 'jpeg');
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    // shoutout
-                    const Divider(),
-                    Center(
-                      child: GestureDetector(
-                        onTap: () => _launchUrl('https://github.com/JideGuru'),
-                        child: const Text(
-                          'Thank the OG aka JideGuru',
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
+                    SizedBox(
+                      width: 140,
+                      child: TextButton(
+                        child: const Text('Export JPEG'),
+                        onPressed: () async {
+                          Uint8List? pngBytes = await getBytes();
+                          if (pngBytes != null) saveFile(pngBytes, 'jpeg');
+                        },
                       ),
                     ),
                   ],
+                ),
+                // shoutout
+                const Divider(),
+                Center(
+                  child: GestureDetector(
+                    onTap: () => _launchUrl('https://github.com/JideGuru'),
+                    child: const Text(
+                      'Thank the OG aka JideGuru',
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -366,6 +368,13 @@ class _CanvasSideBarState extends State<CanvasSideBar> {
   }
 
   void saveFile(Uint8List bytes, String extension) async {
+    var savedMessaged = ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Saved! Check your Files or Downloads.",
+        ),
+      ),
+    );
     if (kIsWeb) {
       html.AnchorElement()
         ..href = '${Uri.dataFromBytes(bytes, mimeType: 'image/$extension')}'
@@ -373,6 +382,7 @@ class _CanvasSideBarState extends State<CanvasSideBar> {
             'FlutterLetsDraw-${DateTime.now().toIso8601String()}.$extension'
         ..style.display = 'none'
         ..click();
+      savedMessaged;
     } else {
       await FileSaver.instance.saveFile(
         name: 'FlutterLetsDraw-${DateTime.now().toIso8601String()}.$extension',
@@ -380,6 +390,7 @@ class _CanvasSideBarState extends State<CanvasSideBar> {
         ext: extension,
         mimeType: extension == 'png' ? MimeType.png : MimeType.jpeg,
       );
+      savedMessaged;
     }
   }
 

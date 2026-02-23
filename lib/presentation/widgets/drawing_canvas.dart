@@ -45,6 +45,7 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
   @override
   Widget build(BuildContext context) {
     _showGrid.value = widget.options.showGrid;
+
     return MouseRegion(
       cursor: currentTool.cursor,
       child: Listener(
